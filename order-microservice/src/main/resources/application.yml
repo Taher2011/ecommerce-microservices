@@ -1,0 +1,24 @@
+server:
+  port: 8080 # default 6062
+
+# ===============================
+# Database Configuration (PostgreSQL)
+# ===============================
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL} # jdbc:postgresql://host.docker.internal:5432/order_test_db #jdbc:postgresql://host.docker.internal:5432/order_dev_db
+    username: ${SPRING_DATASOURCE_USERNAME} #postgres
+    password: ${SPRING_DATASOURCE_PASSWORD} #root
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+aws:
+ access-key: ${AWS_ACCESS_KEY_ID}
+ secret-key: ${AWS_SECRET_ACCESS_KEY}
+ s3: 
+  region: us-east-1
+  bucket-name: taher-demo-s3-v5
