@@ -24,6 +24,7 @@ jobs:
           cache: maven
 
       - name: Run Unit Tests & JaCoCo
+        working-directory: order-microservice
         run: mvn clean verify
 
       - name: SonarQube Analysis
