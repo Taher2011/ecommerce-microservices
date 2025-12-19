@@ -18,6 +18,8 @@ services:
     container_name: order-dev-container
     ports:
       - "8080:8080"
+	env_file:
+	  - .env  
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/order_dev_db
       SPRING_DATASOURCE_USERNAME: postgres
@@ -30,6 +32,8 @@ services:
     container_name: order-test-container
     ports:
       - "8081:8080"
+	env_file:
+	  - .env  
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/order_test_db
       SPRING_DATASOURCE_USERNAME: postgres
