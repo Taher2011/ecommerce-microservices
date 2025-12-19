@@ -78,7 +78,7 @@ public class OrderService {
 		return s3Service.generatePresignedUrl(order.getS3FileUrl());
 	}
 
-	// Helper: Entity -> DTO mapper
+	// Helper: Entity to DTO mapper
 	private OrderDTO mapToDTO(Order order) {
 		OrderDTO dto = new OrderDTO();
 		dto.setId(order.getId());
