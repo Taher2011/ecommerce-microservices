@@ -21,4 +21,4 @@ aws:
  secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
  s3: 
   region: ${AWS_REGION:dummy}
-  bucket-name: ${AWS_BUCKET:dummy}taher-demo-s3-v5
+  bucket-name: ${AWS_BUCKET:dummy}
