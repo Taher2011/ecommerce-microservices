@@ -7,9 +7,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     show-sql: false
 
 cloud:
   aws:
-    enabled: false
+   AWS_ACCESS_KEY_ID: dummy
+   AWS_SECRET_ACCESS_KEY: dummy
