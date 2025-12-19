@@ -1,0 +1,32 @@
+name: CI - JUnit & SonarQube
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+  pull_request:
+
+jobs:
+  build-test-sonar:
+    name: Build, Test & Sonar Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      - name: Run Unit Tests & JaCoCo
+        run: mvn clean verify
+
+      - name: SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar
