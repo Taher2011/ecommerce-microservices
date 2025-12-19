@@ -1,0 +1,39 @@
+name: CI - JUnit & SonarQube
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+  pull_request:
+
+jobs:
+  build-test-sonar:
+    name: Build, Test & Sonar Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      - name: Run Unit Tests & JaCoCo
+        working-directory: order-microservice
+        run: mvn clean verify
+
+      - name: SonarQube Analysis
+        working-directory: order-microservice
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn sonar:sonar \
+           -Dsonar.organization=taher2011 \
+           -Dsonar.projectKey=Taher2011_ecommerce-microservices \
+           -Dsonar.host.url=https://sonarcloud.io \
+           -Dsonar.branch.name=dev
