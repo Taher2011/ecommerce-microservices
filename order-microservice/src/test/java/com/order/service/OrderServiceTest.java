@@ -187,7 +187,6 @@ class OrderServiceTest {
 	void getDownloadUrl_orderNotFound_shouldThrowException() {
 
 		when(orderRepository.findById(1L)).thenReturn(Optional.empty());
-
 		assertThrows(RuntimeException.class, () -> {
 			orderService.getDownloadUrl(1L);
 		});
