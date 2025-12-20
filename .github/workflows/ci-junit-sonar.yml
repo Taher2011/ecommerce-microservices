@@ -31,9 +31,9 @@ jobs:
         working-directory: order-microservice
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn sonar:sonar \
+        run:  mvn sonar:sonar \
            -Dsonar.organization=taher2011 \
-           -Dsonar.projectKey=Taher2011_ecommerce-microservices \
+           -Dsonar.projectKey=order-service \
+           -Dsonar.projectName=order-service \
            -Dsonar.host.url=https://sonarcloud.io \
            -Dsonar.branch.name=dev
