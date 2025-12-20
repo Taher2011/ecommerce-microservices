@@ -34,7 +34,7 @@ jobs:
         run: |
            mvn sonar:sonar \
            -Dsonar.organization=taher2011 \
-           -Dsonar.projectKey=order-service \
+           -Dsonar.projectKey=order-service-ms \
            -Dsonar.projectName=order-service \
            -Dsonar.host.url=https://sonarcloud.io \
            -Dsonar.branch.name=dev
