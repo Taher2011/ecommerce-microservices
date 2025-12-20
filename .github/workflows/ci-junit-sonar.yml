@@ -1,4 +1,4 @@
-name: CI - JUnit & SonarQube
+name: CI - JUnit, SonarQube & Docker
 
 on:
   push:
@@ -8,14 +8,18 @@ on:
   pull_request:
 
 jobs:
+
   build-test-sonar:
     name: Build, Test, Sonar & Package JAR
     runs-on: ubuntu-latest
 
     steps:
+
+      # 1️⃣ Checkout source code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Java 17 environment
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -23,32 +27,57 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # 1️⃣ Run Tests + JaCoCo (ONCE)
+      # 3️⃣ Run Unit Tests + generate JaCoCo coverage report
       - name: Run Unit Tests & JaCoCo
         working-directory: order-microservice
         run: mvn clean verify
 
-      # 2️⃣ SonarCloud Analysis
+      # 4️⃣ Perform SonarCloud code analysis
       - name: SonarQube Analysis
         working-directory: order-microservice
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn sonar:sonar \
-          -Dsonar.organization=taher2011 \
-          -Dsonar.projectKey=Taher2011_ecommerce-microservices \
-          -Dsonar.projectName=order-service \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.branch.name=dev
+            -Dsonar.organization=taher2011 \
+            -Dsonar.projectKey=Taher2011_ecommerce-microservices \
+            -Dsonar.projectName=order-service \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.branch.name=dev
 
-      # 3️⃣ Build Spring Boot JAR (after quality checks)
+      # 5️⃣ Build JAR file (after quality gate)
       - name: Build JAR
         working-directory: order-microservice
         run: mvn package -DskipTests
 
-      # 4️⃣ (Optional but BEST PRACTICE) Upload JAR Artifact
+      # 6️⃣ Upload JAR artifact for Docker job
       - name: Upload JAR Artifact
         uses: actions/upload-artifact@v4
         with:
           name: order-service-jar
           path: order-microservice/target/*.jar
+
+
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build-test-sonar
+
+    steps:
+
+      # 1️⃣ Checkout code again for new job
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Download JAR artifact to target folder
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: order-service-jar
+          path: order-microservice/target
+
+      # 3️⃣ Build Docker image using Dockerfile
+      - name: Build Docker Image
+        working-directory: order-microservice
+        run: |
+          docker build -t order-service:1.0 .
