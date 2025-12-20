@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-test-sonar:
-    name: Build, Test & Sonar Scan
+    name: Build, Test, Sonar & Package JAR
     runs-on: ubuntu-latest
 
     steps:
@@ -23,18 +23,32 @@ jobs:
           java-version: '17'
           cache: maven
 
+      # 1️⃣ Run Tests + JaCoCo (ONCE)
       - name: Run Unit Tests & JaCoCo
         working-directory: order-microservice
         run: mvn clean verify
 
+      # 2️⃣ SonarCloud Analysis
       - name: SonarQube Analysis
         working-directory: order-microservice
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-           mvn clean verify sonar:sonar \
-           -Dsonar.organization=taher2011 \
-           -Dsonar.projectKey=Taher2011_ecommerce-microservices \
-           -Dsonar.projectName=order-service \
-           -Dsonar.host.url=https://sonarcloud.io \
-           -Dsonar.branch.name=dev
+          mvn sonar:sonar \
+          -Dsonar.organization=taher2011 \
+          -Dsonar.projectKey=Taher2011_ecommerce-microservices \
+          -Dsonar.projectName=order-service \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.branch.name=dev
+
+      # 3️⃣ Build Spring Boot JAR (after quality checks)
+      - name: Build JAR
+        working-directory: order-microservice
+        run: mvn package -DskipTests
+
+      # 4️⃣ (Optional but BEST PRACTICE) Upload JAR Artifact
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: order-service-jar
+          path: order-microservice/target/*.jar
