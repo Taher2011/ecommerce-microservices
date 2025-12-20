@@ -49,7 +49,7 @@ public class OrderController {
 		return orderDTO != null ? ResponseEntity.ok(orderDTO) : ResponseEntity.notFound().build();
 	}
 
-	// UPDATE: Full update by ID (use PUT for replace)
+	// UPDATE: Full update by ID  (use PUT for replace)
 	@PutMapping("/{id}")
 	public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestParam String customerName,
 			@RequestParam Double amount, @RequestParam(required = false) MultipartFile file) throws IOException {
