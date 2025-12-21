@@ -6,7 +6,7 @@ server:
 # ===============================
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL} # jdbc:postgresql://host.docker.internal:5432/order_test_db #jdbc:postgresql://host.docker.internal:5432/order_dev_db
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/order_dev_db} # jdbc:postgresql://host.docker.internal:5432/order_test_db #jdbc:postgresql://host.docker.internal:5432/order_dev_db
     username: ${SPRING_DATASOURCE_USERNAME} #postgres
     password: ${SPRING_DATASOURCE_PASSWORD} #root
     driver-class-name: org.postgresql.Driver
@@ -17,8 +17,8 @@ spring:
     show-sql: true
 
 aws:
- access-key: ${{ secrets.AWS_ACCESS_KEY_ID || 'dummy' }}
- secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY || 'dummy' }}
+ access-key: ${AWS_ACCESS_KEY_ID:dummy}
+ secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
  s3: 
-  region: ${{ secrets.AWS_REGION || 'dummy' }}
-  bucket-name: ${{ secrets.AWS_BUCKET || 'dummy' }}
+  region: ${AWS_REGION:dummy}
+  bucket-name: ${AWS_BUCKET:dummy}
