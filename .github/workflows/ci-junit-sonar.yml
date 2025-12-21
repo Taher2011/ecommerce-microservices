@@ -63,8 +63,8 @@ jobs:
     if: github.event_name == 'push'
 
     env:
-      IMAGE_NAME: taher2011/order-service
-      IMAGE_TAG: 1.0-${{ github.ref_name }}
+      IMAGE_NAME: taher2011/order-service:1.0
+      IMAGE_TAG: ${{ github.ref_name }}
       IMAGE_SHA_TAG: ${{ github.sha }}
 
     steps:
