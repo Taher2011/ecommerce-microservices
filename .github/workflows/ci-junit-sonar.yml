@@ -3,7 +3,7 @@ name: CI - JUnit, SonarQube & Docker
 on:
   push:
     branches:
-      - dev
+   #  - dev
       - test
   pull_request:
 
