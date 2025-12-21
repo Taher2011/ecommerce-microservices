@@ -14,22 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # 🔁 Profile auto-detected from branch
       SPRING_PROFILES_ACTIVE: ${{ github.ref_name }}
 
-      # DB
-      SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASS }}
-
-      # AWS
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
@@ -39,11 +27,11 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Run Tests & JaCoCo
+      - name: Build & Test
         working-directory: order-microservice
         run: mvn clean verify
 
-      - name: SonarCloud Analysis
+      - name: Sonar Scan
         working-directory: order-microservice
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -74,9 +62,10 @@ jobs:
     env:
       IMAGE_NAME: taher2011/order-service
       IMAGE_TAG: 1.0-${{ github.ref_name }}
+      IMAGE_SHA_TAG: ${{ github.sha }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Download JAR
@@ -94,8 +83,11 @@ jobs:
       - name: Build Docker Image
         working-directory: order-microservice
         run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker build \
+            -t $IMAGE_NAME:$IMAGE_TAG \
+            -t $IMAGE_NAME:$IMAGE_SHA_TAG .
 
       - name: Push Docker Image
         run: |
           docker push $IMAGE_NAME:$IMAGE_TAG
+          docker push $IMAGE_NAME:$IMAGE_SHA_TAG
