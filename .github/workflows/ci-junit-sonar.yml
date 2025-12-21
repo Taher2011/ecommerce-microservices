@@ -59,6 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-test-sonar
 
+    # 🔴 PR par docker job nahi chalegi
+    if: github.event_name == 'push'
+
     env:
       IMAGE_NAME: taher2011/order-service
       IMAGE_TAG: 1.0-${{ github.ref_name }}
@@ -80,14 +83,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Sanitize Docker Tag
+        run: |
+          echo "SAFE_TAG=${IMAGE_TAG//\//-}" >> $GITHUB_ENV
+
       - name: Build Docker Image
         working-directory: order-microservice
         run: |
           docker build \
-            -t $IMAGE_NAME:$IMAGE_TAG \
+            -t $IMAGE_NAME:$SAFE_TAG \
             -t $IMAGE_NAME:$IMAGE_SHA_TAG .
 
       - name: Push Docker Image
         run: |
-          docker push $IMAGE_NAME:$IMAGE_TAG
+          docker push $IMAGE_NAME:$SAFE_TAG
           docker push $IMAGE_NAME:$IMAGE_SHA_TAG
