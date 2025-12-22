@@ -1,4 +1,4 @@
-name: CI - Build, Test, Sonar & Docker
+name: CI - Test, Sonar, Build & Docker
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 jobs:
 
   build-test-sonar:
-    name: Build, Test & Sonar
+    name: Test, Build & Sonar
     runs-on: ubuntu-latest
 
     env:
@@ -55,11 +55,11 @@ jobs:
 
 
   docker-build-push:
-    name: Docker Build & Push
+    name: Docker Image Build & Push
     runs-on: ubuntu-latest
     needs: build-test-sonar
 
-    # 🔴 PR par docker job nahi chalegi
+    # 🔴 on PR docker job won't run
     if: github.event_name == 'push'
 
     env:
