@@ -60,12 +60,16 @@ jobs:
     needs: build-test-sonar
 
     if: github.event_name == 'push'
+    
+    #  Branch name is used as environment selector
+    environment: ${{ github.ref_name }}
 
     env:
       IMAGE_NAME: taher2011/order-service
       IMAGE_TAG: ${{ github.ref_name }}
       IMAGE_SHA_TAG: ${{ github.sha }}
 
+      # Use environment-specific secrets
       DB_URL: ${{ secrets.DB_URL }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -80,6 +84,7 @@ jobs:
           echo "Branch Name from ref_name: ${{ github.ref_name }}"
           echo "IMAGE_TAG: $IMAGE_TAG"
           echo "IMAGE_SHA_TAG: $IMAGE_SHA_TAG"
+          echo "DB_URL exists? ${{ secrets.DB_URL != '' }}"
 
       - name: Download JAR
         uses: actions/download-artifact@v4
@@ -116,14 +121,18 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          
+          # Send envs into remote container
           envs: IMAGE_TAG,DB_URL,DB_USERNAME,DB_PASSWORD,IMAGE_NAME,SAFE_TAG
+          
           script: |
             echo "===== Debug EC2 Variables ====="
             echo "IMAGE_TAG: $IMAGE_TAG"
             echo "SAFE_TAG: $SAFE_TAG"
             echo "IMAGE_NAME: $IMAGE_NAME"
+            echo "DB_URL: $DB_URL"
 
-            echo "🚀 Deploying environment: $IMAGE_TAG"
+            echo " Deploying environment: $IMAGE_TAG"
 
             if [ "$IMAGE_TAG" = "dev" ]; then
               APP_PORT=8081
@@ -132,7 +141,7 @@ jobs:
               APP_PORT=8082
               CONTAINER_NAME=order-service-stage
             else
-              echo "❌ Unknown environment: $IMAGE_TAG"
+              echo "Unknown environment: $IMAGE_TAG"
               exit 1
             fi
 
