@@ -12,5 +12,8 @@ spring:
 
 cloud:
   aws:
-   AWS_ACCESS_KEY_ID: dummy
-   AWS_SECRET_ACCESS_KEY: dummy
+   aws.access-key: dummy
+   aws.secret-key: dummy
+  s3: 
+   region: us-east-1
+   bucket-name: taher-demo-s3-v5	 
