@@ -114,12 +114,12 @@ jobs:
           script: |
             echo "🚀 Deploying environment: $IMAGE_TAG"
 
-            if [ "$IMAGE_TAG" = "devs" ]; then
+            if [ "$IMAGE_TAG" = "dev" ]; then
               APP_PORT=8081
-              CONTAINER_NAME=order-service-devs
-            elif [ "$IMAGE_TAG" = "stages" ]; then
+              CONTAINER_NAME=order-service-dev
+            elif [ "$IMAGE_TAG" = "stage" ]; then
               APP_PORT=8082
-              CONTAINER_NAME=order-service-stages
+              CONTAINER_NAME=order-service-stage
             else
               echo "❌ Unknown environment"
               exit 1
