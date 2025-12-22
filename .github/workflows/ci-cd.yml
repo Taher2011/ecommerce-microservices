@@ -3,7 +3,7 @@ name: CI-CD Order Service
 on:
   push:
     branches:
-      - devs
+      - dev
       - stages
   pull_request:
 
