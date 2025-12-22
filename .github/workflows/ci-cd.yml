@@ -131,6 +131,7 @@ jobs:
             docker run -d \
               --name $CONTAINER_NAME \
               --network host \
+              -e AWS_REGION=us-east-1 \
               -e SPRING_PROFILES_ACTIVE=$IMAGE_TAG \
               -e SPRING_DATASOURCE_URL=$DB_URL \
               -e SPRING_DATASOURCE_USERNAME=$DB_USERNAME \

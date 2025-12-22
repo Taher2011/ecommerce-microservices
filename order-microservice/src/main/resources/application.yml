@@ -17,8 +17,8 @@ spring:
     show-sql: true
 
 aws:
- access-key: ${AWS_ACCESS_KEY_ID:dummy}
- secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
+# access-key: ${AWS_ACCESS_KEY_ID:dummy}
+# secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
  s3: 
-  region: ${AWS_REGION:dummy}
-  bucket-name: ${AWS_BUCKET:dummy}
+  region: us-east-1
+  bucket-name: taher-demo-s3-v5
