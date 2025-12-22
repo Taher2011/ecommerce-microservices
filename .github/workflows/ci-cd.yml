@@ -60,8 +60,6 @@ jobs:
     needs: build-test-sonar
 
     if: github.event_name == 'push'
-    
-    #  Branch name is used as environment selector
     environment: ${{ github.ref_name }}
 
     env:
@@ -69,7 +67,6 @@ jobs:
       IMAGE_TAG: ${{ github.ref_name }}
       IMAGE_SHA_TAG: ${{ github.sha }}
 
-      # Use environment-specific secrets
       DB_URL: ${{ secrets.DB_URL }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -77,14 +74,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Debug GitHub Env
-        run: |
-          echo "===== Debug GitHub Env ====="
-          echo "Branch Name from ref_name: ${{ github.ref_name }}"
-          echo "IMAGE_TAG: $IMAGE_TAG"
-          echo "IMAGE_SHA_TAG: $IMAGE_SHA_TAG"
-          echo "DB_URL exists? ${{ secrets.DB_URL != '' }}"
 
       - name: Download JAR
         uses: actions/download-artifact@v4
@@ -101,7 +90,6 @@ jobs:
       - name: Create Safe Docker Tag
         run: |
           echo "SAFE_TAG=${IMAGE_TAG//\//-}" >> $GITHUB_ENV
-          echo "SAFE_TAG computed: ${IMAGE_TAG//\//-}"
 
       - name: Build Docker Image
         working-directory: order-microservice
@@ -121,48 +109,32 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          
-          # Send envs into remote container
-          envs: IMAGE_TAG,DB_URL,DB_USERNAME,DB_PASSWORD,IMAGE_NAME,SAFE_TAG
-          
-          script: |
-            echo "===== Debug EC2 Variables ====="
-            echo "IMAGE_TAG: $IMAGE_TAG"
-            echo "SAFE_TAG: $SAFE_TAG"
-            echo "IMAGE_NAME: $IMAGE_NAME"
-            echo "DB_URL: $DB_URL"
+          envs: IMAGE_NAME,SAFE_TAG,IMAGE_TAG,DB_URL,DB_USERNAME,DB_PASSWORD
 
-            echo " Deploying environment: $IMAGE_TAG"
+          script: |
+            echo "Deploying environment: $IMAGE_TAG"
 
             if [ "$IMAGE_TAG" = "dev" ]; then
-              APP_PORT=8081
               CONTAINER_NAME=order-service-dev
             elif [ "$IMAGE_TAG" = "stage" ]; then
-              APP_PORT=8082
               CONTAINER_NAME=order-service-stage
             else
-              echo "Unknown environment: $IMAGE_TAG"
+              echo "Unknown environment"
               exit 1
             fi
 
-            echo "🔹 Pulling new Docker image"
             docker pull $IMAGE_NAME:$SAFE_TAG
 
-            echo "🔹 Stop + Remove Previous Container"
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
 
-            echo "🔹 Start New Container"
             docker run -d \
               --name $CONTAINER_NAME \
-              -p $APP_PORT:8080 \
+              --network host \
               -e SPRING_PROFILES_ACTIVE=$IMAGE_TAG \
               -e SPRING_DATASOURCE_URL=$DB_URL \
               -e SPRING_DATASOURCE_USERNAME=$DB_USERNAME \
               -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD \
               $IMAGE_NAME:$SAFE_TAG
 
-            echo "===== Deployment Complete ====="
-            echo "Container: $CONTAINER_NAME"
-            echo "Port: $APP_PORT"
-            echo "Image: $IMAGE_NAME:$SAFE_TAG"
+            echo "Deployment completed for $IMAGE_TAG"
