@@ -3,8 +3,8 @@ name: CI - Build, Test, Sonar & Docker
 on:
   push:
     branches:
-      - dev
-      - stage
+      - devs
+      - stages
   pull_request:
 
 jobs:
