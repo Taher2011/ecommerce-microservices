@@ -35,3 +35,10 @@ build/
 .sonarlint/**
 .env
 
+# lock files
+*.lock
+*.lock_info
+
+**/.metadata/
+**/.sonarlint/
+
