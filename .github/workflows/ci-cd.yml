@@ -109,7 +109,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: IMAGE_NAME,SAFE_TAG,IMAGE_TAG,DB_URL,DB_USERNAME,DB_PASSWORD,CONTAINER_LOGGING_FILE_PATH
+          envs: IMAGE_NAME,SAFE_TAG,IMAGE_TAG,DB_URL,DB_USERNAME,DB_PASSWORD,LOGGING_FILE_PATH
 
           script: |
             echo "Deploying environment: $IMAGE_TAG"
@@ -136,8 +136,8 @@ jobs:
               -e SPRING_DATASOURCE_URL=$DB_URL \
               -e SPRING_DATASOURCE_USERNAME=$DB_USERNAME \
               -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD \
-              -e LOGGING_FILE_PATH=$CONTAINER_LOGGING_FILE_PATH \ \
-              -v /home/ec2-user/app/logs:/app/logs \
+              -e LOGGING_FILE_PATH=$LOGGING_FILE_PATH \
+              -v /home/ec2-user/app/logs:$LOGGING_FILE_PATH \
               $IMAGE_NAME:$SAFE_TAG
 
             echo "Deployment completed for $IMAGE_TAG"
