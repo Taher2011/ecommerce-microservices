@@ -9,12 +9,11 @@ services:
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       POSTGRES_DB: ${SPRING_DATASOURCE_DB}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
       - postgres_data_${ENV}:/var/lib/postgresql/data
 
   order-service:
-   #image: taher2011/order-service:${IMAGE_TAG}
     image: order-service:${IMAGE_TAG}
     container_name: order-${ENV}
     ports:
@@ -23,6 +22,9 @@ services:
       - .env.${ENV}
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${SPRING_DATASOURCE_DB}
+      LOGGING_FILE_PATH: ${LOGGING_FILE_PATH}
+    volumes:
+      - ./logs:${LOGGING_FILE_PATH}
     depends_on:
       - postgres
 

@@ -34,11 +34,13 @@ build/
 
 .sonarlint/**
 .env
+.env.dev
+.env.stage
 
 # lock files
 *.lock
 *.lock_info
 
-**/.metadata/
-**/.sonarlint/
+.metadata/
+.sonarlint/
 

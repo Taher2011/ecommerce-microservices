@@ -1,14 +1,17 @@
 server:
   port: 8080
 
+logging:
+  config: classpath:logback-spring.xml
+
 # ===============================
 # Database Configuration (PostgreSQL)
 # ===============================
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL} # jdbc:postgresql://host.docker.internal:5432/order_test_db #jdbc:postgresql://host.docker.internal:5432/order_dev_db
-    username: ${SPRING_DATASOURCE_USERNAME} #postgres
-    password: ${SPRING_DATASOURCE_PASSWORD} #root
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -17,8 +20,6 @@ spring:
     show-sql: true
 
 aws:
-# access-key: ${AWS_ACCESS_KEY_ID:dummy}
-# secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
- s3: 
-  region: us-east-1
-  bucket-name: taher-demo-s3-v5
+  s3:
+    region: us-east-1
+    bucket-name: taher-demo-s3-v5
