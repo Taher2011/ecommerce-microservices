@@ -137,7 +137,7 @@ jobs:
               -e SPRING_DATASOURCE_USERNAME=$DB_USERNAME \
               -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD \
               -e LOGGING_FILE_PATH=$LOGGING_FILE_PATH \
-              -v /home/ec2-user/app/logs:$LOGGING_FILE_PATH \
+              -v /home/ec2-user/app/logs:/app/logs \
               $IMAGE_NAME:$SAFE_TAG
 
             echo "Deployment completed for $IMAGE_TAG"
