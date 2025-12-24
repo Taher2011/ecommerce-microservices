@@ -89,4 +89,12 @@ public class OrderController {
 		log.info("Order deleted successfully. orderId={}", id);
 		return ResponseEntity.noContent().build();
 	}
+
+	@GetMapping("/{id}/download-url")
+	public ResponseEntity<String> getPresignedDownloadUrl(@PathVariable Long id) {
+		log.info("GET /{}/download-url called", id);
+		String presignedUrl = orderService.getDownloadUrl(id);
+		log.info("GET /{}/download-url success", id);
+		return ResponseEntity.ok(presignedUrl);
+	}
 }
