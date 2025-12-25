@@ -11,13 +11,7 @@ management:
   endpoints:
     web:
      exposure:
-      include: "*"
-  metrics:
-    export:
-      cloudwatch:
-        enabled: true
-        namespace: OrderServiceApp
-        step: 60s
+      include: metrics,health
 
 logging:
   level:
