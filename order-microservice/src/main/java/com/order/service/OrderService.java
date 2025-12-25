@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.order.amazon.S3.service.S3Service;
 import com.order.dto.OrderDTO;
 import com.order.entity.Order;
+import com.order.exception.FileUploadException;
+import com.order.exception.OrderNotFoundException;
 import com.order.repository.OrderRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +33,17 @@ public class OrderService {
 		log.info("Creating order for customer={}, amount={}", customerName, amount);
 		if (file == null || file.isEmpty()) {
 			log.warn("No file provided for customer={}", customerName);
+			throw new FileUploadException("File is required for order creation");
 		}
 
-		String s3Url = s3Service.uploadFile(file);
-		log.debug("File uploaded to S3. URL={}", s3Url);
+		String s3Url;
+		try {
+			s3Url = s3Service.uploadFile(file);
+			log.debug("File uploaded to S3. URL={}", s3Url);
+		} catch (Exception ex) {
+			log.error("Failed to upload file for customer={}", customerName, ex);
+			throw new FileUploadException("Failed to upload file: " + ex.getMessage());
+		}
 
 		Order order = new Order();
 		order.setCustomerName(customerName);
@@ -61,25 +70,30 @@ public class OrderService {
 		return orderRepository.findById(id).map(order -> {
 			log.debug("Order found for id={}", id);
 			return mapToDTO(order);
-		}).orElseGet(() -> {
+		}).orElseThrow(() -> {
 			log.warn("Order not found for id={}", id);
-			return null;
+			return new OrderNotFoundException("Order not found with id: " + id);
 		});
 	}
 
 	// UPDATE
 	public OrderDTO updateOrder(Long id, String customerName, Double amount, MultipartFile file) throws IOException {
 		log.info("Updating order id={}", id);
-		Order existingOrder = orderRepository.findById(id).orElse(null);
-		if (existingOrder == null) {
+		Order existingOrder = orderRepository.findById(id).orElseThrow(() -> {
 			log.warn("Cannot update. Order not found for id={}", id);
-			return null;
-		}
+			return new OrderNotFoundException("Order not found with id: " + id);
+		});
 		existingOrder.setCustomerName(customerName);
 		existingOrder.setAmount(amount);
 		if (file != null && !file.isEmpty()) {
 			log.debug("New file provided for order id={}", id);
-			String newS3Url = s3Service.uploadFile(file);
+			String newS3Url;
+			try {
+				newS3Url = s3Service.uploadFile(file);
+			} catch (Exception ex) {
+				log.error("Failed to upload new file for order id={}", id, ex);
+				throw new FileUploadException("Failed to upload new file: " + ex.getMessage());
+			}
 			existingOrder.setS3FileUrl(newS3Url);
 			log.debug("S3 URL updated for order id={}", id);
 		}
@@ -95,9 +109,10 @@ public class OrderService {
 			orderRepository.deleteById(id);
 			log.info("Order deleted successfully. orderId={}", id);
 			return true;
+		} else {
+			log.warn("Delete failed. Order not found for id={}", id);
+			throw new OrderNotFoundException("Order not found with id: " + id);
 		}
-		log.warn("Delete failed. Order not found for id={}", id);
-		return false;
 	}
 
 	// DOWNLOAD URL
@@ -105,7 +120,7 @@ public class OrderService {
 		log.info("Generating download URL for orderId={}", orderId);
 		Order order = orderRepository.findById(orderId).orElseThrow(() -> {
 			log.error("Order not found while generating download URL. orderId={}", orderId);
-			return new RuntimeException("Order not found");
+			return new OrderNotFoundException("Order not found with id: " + orderId);
 		});
 		String url = s3Service.generatePresignedUrl(order.getS3FileUrl());
 		log.debug("Presigned URL generated for orderId={}", orderId);
@@ -115,7 +130,6 @@ public class OrderService {
 	// Helper mapper
 	private OrderDTO mapToDTO(Order order) {
 		log.debug("Mapping Order entity to DTO. orderId={}", order.getId());
-
 		OrderDTO dto = new OrderDTO();
 		dto.setId(order.getId());
 		dto.setCustomerName(order.getCustomerName());
