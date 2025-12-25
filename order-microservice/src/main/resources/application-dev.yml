@@ -18,3 +18,7 @@ management:
         enabled: true
         namespace: OrderServiceApp
         step: 60s
+
+logging:
+  level:
+    '[io.micrometer.cloudwatch2]': DEBUG
