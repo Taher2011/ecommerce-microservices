@@ -6,6 +6,10 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 management:
   endpoints:
@@ -15,4 +19,5 @@ management:
 
 logging:
   level:
-    '[io.micrometer.cloudwatch2]': DEBUG
+    org.springframework.data.redis: DEBUG
+    com.order.redis.service.RedisService: INFO

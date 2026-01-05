@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -51,13 +53,22 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	// General Runtime Exception (500 - for business logic errors like in download
-	// URL)
+	// General Runtime Exception
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponseDTO> handleRuntimeException(RuntimeException ex) {
+		ErrorResponseDTO error;
+		if (ex instanceof AuthorizationDeniedException) {
+			log.error("Authentication Denied Exception occurred: {}", ex.getMessage(), ex);
+			error = new ErrorResponseDTO("Authentication Denied Exception", ex.getMessage(),
+					HttpStatus.FORBIDDEN.value());
+			return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+		} else if (ex instanceof AuthenticationException) {
+			log.error("Authentication Exception occurred: {}", ex.getMessage(), ex);
+			error = new ErrorResponseDTO("BAD_CREDENTIALS", ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+		}
 		log.error("Runtime Exception occurred: {}", ex.getMessage(), ex);
-		ErrorResponseDTO error = new ErrorResponseDTO("BUSINESS_LOGIC_ERROR", ex.getMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR.value());
+		error = new ErrorResponseDTO("BUSINESS_LOGIC_ERROR", ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

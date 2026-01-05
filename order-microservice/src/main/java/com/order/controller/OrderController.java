@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class OrderController {
 	}
 
 	// CREATE
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<OrderDTO> createOrder(@RequestParam String customerName, @RequestParam Double amount,
 			@RequestParam MultipartFile file) throws IOException {
@@ -64,6 +66,7 @@ public class OrderController {
 	}
 
 	// UPDATE
+	@PreAuthorize("hasAnyRole('USER')")
 	@PutMapping("/{id}")
 	public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestParam String customerName,
 			@RequestParam Double amount, @RequestParam(required = false) MultipartFile file) throws IOException {
@@ -78,6 +81,7 @@ public class OrderController {
 	}
 
 	// DELETE
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
 		log.info("DELETE /api/orders/{} called", id);
