@@ -1,9 +1,7 @@
 package com.order.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.order.amazon.S3.service.S3Service;
 import com.order.dto.OrderDTO;
 import com.order.entity.Order;
+import com.order.exception.FileUploadException;
+import com.order.exception.OrderNotFoundException;
 import com.order.repository.OrderRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,7 +79,7 @@ class OrderServiceTest {
 
 		when(s3Service.uploadFile(multipartFile)).thenThrow(new IOException("S3 upload failed"));
 
-		assertThrows(IOException.class, () -> {
+		assertThrows(FileUploadException.class, () -> {
 			orderService.createOrder("Taher", 200.0, multipartFile);
 		});
 	}
@@ -126,12 +126,11 @@ class OrderServiceTest {
 	// -------------------------
 	@Test
 	void getOrderById_notFound() {
-
 		when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
-		OrderDTO dto = orderService.getOrderById(1L);
-
-		assertNull(dto);
+		assertThrows(OrderNotFoundException.class, () -> {
+			orderService.getOrderById(1L);
+		});
 	}
 
 	// -------------------------
@@ -153,12 +152,12 @@ class OrderServiceTest {
 	// -------------------------
 	@Test
 	void deleteOrder_notFound() {
-
 		when(orderRepository.existsById(1L)).thenReturn(false);
 
-		boolean result = orderService.deleteOrder(1L);
+		assertThrows(OrderNotFoundException.class, () -> {
+			orderService.deleteOrder(1L);
+		});
 
-		assertFalse(result);
 		verify(orderRepository, never()).deleteById(anyLong());
 	}
 
