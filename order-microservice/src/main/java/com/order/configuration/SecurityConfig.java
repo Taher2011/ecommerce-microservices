@@ -28,16 +28,18 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.requestMatchers("/auth/login").permitAll()
-				/*
-				 * .requestMatchers(HttpMethod.GET,
-				 * "/api/orders/**").permitAll().requestMatchers("/redis-test/**") .permitAll()
-				 *
-				 * .requestMatchers(HttpMethod.POST, "/api/orders/**").hasRole("USER")
-				 * .requestMatchers(HttpMethod.PUT, "/api/orders/**").authenticated()
-				 * .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasRole("ADMIN")
-				 */
-				.anyRequest().authenticated())
+		http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/login").permitAll()
+						.requestMatchers("/actuator/**").permitAll()
+						/*
+						 * .requestMatchers(HttpMethod.GET,
+						 * "/api/orders/**").permitAll().requestMatchers("/redis-test/**") .permitAll()
+						 *
+						 * .requestMatchers(HttpMethod.POST, "/api/orders/**").hasRole("USER")
+						 * .requestMatchers(HttpMethod.PUT, "/api/orders/**").authenticated()
+						 * .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasRole("ADMIN")
+						 */
+						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
