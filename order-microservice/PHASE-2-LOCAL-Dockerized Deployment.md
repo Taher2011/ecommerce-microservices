@@ -2,6 +2,8 @@ Run Order Microservice inside Docker container
 
 PostgreSQL also containerized
 
+Redis also containerized
+
 Use same Spring profiles
 
 Config injected via Docker environment variables
@@ -24,13 +26,13 @@ Run Containers -->
 ====================================================================================================================================================================================================
      
 Dump data from local DB -->
- pg_dump -U postgres -h localhost order_dev_db > backup.sql     
- pg_dump -U postgres -h localhost order_stage_db > backup.sql
+ pg_dump -U postgres -h localhost ecommerce_dev_db > backup.sql     
+ pg_dump -U postgres -h localhost ecommerce_stage_db > backup.sql
 ====================================================================================================================================================================================================
  
 Dump data into docker  DB container "postgre-dev" and "postgre-stage" container DB -->
- docker exec -i postgres-dev psql -U postgres order_dev_db < backup.sql
- docker exec -i postgres-stage psql -U postgres order_stage_db < backup.sql
+ docker exec -i postgres-dev psql -U postgres ecommerce_dev_db < backup.sql
+ docker exec -i postgres-stage psql -U postgres ecommerce_stage_db < backup.sql
 ====================================================================================================================================================================================================
  
 Stop/Cleanup -->
