@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       POSTGRES_DB: ${SPRING_DATASOURCE_DB}
     ports:
-      - "5432:5432"
+      - "${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}"
     volumes:
       - postgres_data_${ENV}:/var/lib/postgresql/data
 
@@ -17,7 +17,7 @@ services:
     image: redis:7
     container_name: redis-${ENV}
     ports:
-      - "6379:6379"
+      - "${SPRING_DATA_REDIS_PORT}:${SPRING_DATA_REDIS_PORT}"
 
   order-service:
     image: order-service:${IMAGE_TAG}
