@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.order.redis.service.TokenVersionService;
+import com.order.service.TokenVersionService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.order.dto.AuthResponse;
 import com.order.dto.LoginRequest;
-import com.order.redis.service.TokenVersionService;
+import com.order.service.TokenVersionService;
 import com.order.util.JwtTokenGenerator;
 import com.order.util.JwtTokenValidator;
 

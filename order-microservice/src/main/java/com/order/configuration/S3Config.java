@@ -13,18 +13,14 @@ public class S3Config {
 
 	@Value("${aws.s3.region:ap-south-1}")
 	private String region;
-	
-	@Bean
-    public S3Client s3Client() {
-        return S3Client.builder()
-                .region(Region.of(region))
-                .build();
-    }
 
 	@Bean
-    public S3Presigner s3Presigner() {
-        return S3Presigner.builder()
-                .region(Region.of(region))
-                .build();
-    }
+	public S3Client s3Client() {
+		return S3Client.builder().region(Region.of(region)).build();
+	}
+
+	@Bean
+	public S3Presigner s3Presigner() {
+		return S3Presigner.builder().region(Region.of(region)).build();
+	}
 }

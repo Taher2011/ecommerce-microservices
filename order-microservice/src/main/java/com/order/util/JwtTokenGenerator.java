@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.order.redis.service.TokenVersionService;
+import com.order.service.TokenVersionService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

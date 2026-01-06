@@ -1,4 +1,4 @@
-package com.order.amazon.S3.service;
+package com.order.service;
 
 import java.io.IOException;
 import java.time.Duration;
