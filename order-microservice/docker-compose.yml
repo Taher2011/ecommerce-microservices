@@ -24,19 +24,27 @@ services:
     container_name: order-${ENV}
     ports:
       - "${APP_PORT}:${APP_PORT}"
+
     env_file:
       - .env.${ENV}
+
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${SPRING_DATASOURCE_DB}
       SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST}
       SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT}
       LOGGING_FILE_PATH: ${LOGGING_FILE_PATH}
+
+      # AWS IMPORTANT
+      AWS_PROFILE: ${ENV}
+      AWS_S3_REGION: ${AWS_S3_REGION}
+
     volumes:
       - ./logs:${LOGGING_FILE_PATH}
+      - C:/Users/Admin/.aws:/root/.aws:ro   # ⭐ MOST IMPORTANT LINE
+
     depends_on:
       - postgres
       - redis
 
 volumes:
   postgres_data_dev:
-  postgres_data_stage:

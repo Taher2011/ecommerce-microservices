@@ -10,12 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.dto.AuthResponse;
 import com.order.dto.LoginRequest;
+import com.order.dto.RefreshTokenRequest;
 import com.order.service.TokenVersionService;
 import com.order.util.JwtTokenGenerator;
 import com.order.util.JwtTokenValidator;
@@ -56,8 +56,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/refresh")
-	public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String authHeader) {
-		String refreshToken = authHeader.substring(7);
+	public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
+		String refreshToken = request.getRefreshToken();
 		String username = jwtTokenValidator.extractUsername(refreshToken); // Use injected
 		UserDetails user = userDetailsService.loadUserByUsername(username);
 		int currentVersion = tokenVersionService.getVersion(username);
