@@ -10,10 +10,9 @@ spring:
       ddl-auto: create-drop
     show-sql: false
 
-cloud:
-  aws:
-   aws.access-key: dummy
-   aws.secret-key: dummy
+aws:
   s3: 
    region: us-east-1
-   bucket-name: taher-demo-s3-v5	 
+   bucket-name: taher-demo-s3-v5
+   access-key: dummy-key
+   secret-key: dummy-key
