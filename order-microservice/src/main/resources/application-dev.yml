@@ -10,7 +10,13 @@ spring:
     redis:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
-
+  jpa:
+    properties:
+      hibernate:
+        default:
+          schema: ${SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA}
+    hibernate:
+      ddl-auto: update
 management:
   endpoints:
     web:

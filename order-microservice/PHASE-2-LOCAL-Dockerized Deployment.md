@@ -13,7 +13,7 @@ Use Docker image tags for env separation
 ====================================================================================================================================================================================================
 
 Build Image (ONCE) -->Same image content, different tags
-docker build -t order-service:1.0 .
+docker build -t order-service:dev .
 docker tag order-service:1.0 order-service:dev
 docker tag order-service:1.0 order-service:stage
 ====================================================================================================================================================================================================

@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orders", schema = "order_dev_db")
 @Getter
 @Setter
 public class Order {

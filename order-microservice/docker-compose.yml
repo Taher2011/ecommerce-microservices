@@ -31,6 +31,7 @@ services:
 
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${SPRING_DATASOURCE_DB}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: ${SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA}
       SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST}
       SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT}
       LOGGING_FILE_PATH: ${LOGGING_FILE_PATH}
@@ -40,7 +41,7 @@ services:
       AWS_S3_REGION: ${AWS_S3_REGION}
 
     volumes:
-      - ./logs:${LOGGING_FILE_PATH}      
+      - ./logs:${LOGGING_FILE_PATH}
 
     depends_on:
       - postgres
