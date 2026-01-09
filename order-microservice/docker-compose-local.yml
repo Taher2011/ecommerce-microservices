@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-${ENV}
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: ${SPRING_DATASOURCE_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7
+    container_name: redis-${ENV}
+    ports:
+      - "6379:6379"
+
+  order-service:
+    build: .
+    image: order-service:${IMAGE_TAG}
+    container_name: order-${ENV}
+    environment:
+      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_REGION: ${AWS_REGION}	  
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env.dev
+    volumes:
+      - ./logs:${LOGGING_FILE_PATH}
+      - C:/Users/Admin/.aws:/root/.aws:ro
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:

@@ -36,6 +36,7 @@ build/
 .env
 .env.dev
 .env.stage
+.env.ec2
 
 # lock files
 *.lock
@@ -46,5 +47,3 @@ build/
 
 .aws/
 /logs
-
-docker-compose.override.yml
