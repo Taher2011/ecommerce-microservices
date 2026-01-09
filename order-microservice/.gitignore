@@ -46,3 +46,5 @@ build/
 
 .aws/
 /logs
+
+docker-compose.override.yml
