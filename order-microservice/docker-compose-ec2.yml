@@ -1,13 +1,14 @@
 services:
   redis:
     image: redis:7
-    container_name: redis-ec2
+    container_name: redis-${ENV}
     ports:
       - "6379:6379"
 
   order-service:
+    build: .
     image: order-service:${IMAGE_TAG}
-    container_name: order-ec2
+    container_name: order-${ENV}
     ports:
       - "${APP_PORT}:${APP_PORT}"
     env_file:
