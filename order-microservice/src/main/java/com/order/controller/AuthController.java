@@ -23,7 +23,7 @@ import com.order.util.JwtTokenValidator;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
 	private final AuthenticationManager authenticationManager;
