@@ -304,7 +304,7 @@ docker compose --env-file .env.ec2 -f docker-compose-ec2.yml up -d
 
 (app stuck, config same)
 
-docker compose restart order-service
+docker compose --env-file .env.ec2 -f docker-compose-ec2.yml restart order-service
 
 
 Fast ✅ Safe ✅
