@@ -23,6 +23,12 @@ spring:
         default:
           schema: ${SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA}
 
+management:
+ endpoints:
+  web:
+   exposure:
+    include: "*"
+
 aws:
   s3:
     region: ${AWS_REGION}

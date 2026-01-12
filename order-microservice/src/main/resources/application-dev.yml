@@ -17,11 +17,6 @@ spring:
           schema: ${SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA}
     hibernate:
       ddl-auto: update
-management:
-  endpoints:
-    web:
-     exposure:
-      include: "*"
 
 logging:
   level:
